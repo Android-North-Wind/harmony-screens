@@ -46,7 +46,8 @@ type StackPresentation =
   | "fullScreenModal"
   | "formSheet"
   | "containedModal"
-  | "containedTransparentModal";
+  | "containedTransparentModal"
+  | "pageSheet";
 
 type StackAnimation =
   | "default"
@@ -104,11 +105,12 @@ export interface NativeProps extends ViewProps {
   swipeDirection?: WithDefault<SwipeDirection, "horizontal">;
   hideKeyboardOnSwipe?: boolean;
   activityState?: WithDefault<Float, -1.0>;
-  screenId?:string;
+  screenId?: WithDefault<string, ''>;
   navigationBarColor?: ColorValue;
   navigationBarTranslucent?: boolean;
   navigationBarHidden?: boolean;
   nativeBackButtonDismissalEnabled?: boolean;
+  accessibilityContainerViewIsModal?: WithDefault<boolean, true>;
 }
 
 export default codegenNativeComponent<NativeProps>("RNSModalScreen", {
