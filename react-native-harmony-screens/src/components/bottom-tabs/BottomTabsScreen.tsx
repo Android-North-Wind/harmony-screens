@@ -214,15 +214,17 @@ function mapAppearanceToNativeProp(
     compactInline,
     tabBarBackgroundColor,
     tabBarShadowColor,
+    tabBarBlurEffect,
   } = appearance;
 
+  // 明确列出所有属性，避免使用展开运算符传递意外属性
   return {
-    ...appearance,
     stacked: mapItemAppearanceToNativeProp(stacked),
     inline: mapItemAppearanceToNativeProp(inline),
     compactInline: mapItemAppearanceToNativeProp(compactInline),
     tabBarBackgroundColor: processColor(tabBarBackgroundColor),
     tabBarShadowColor: processColor(tabBarShadowColor),
+    tabBarBlurEffect: tabBarBlurEffect,
   };
 }
 
@@ -252,19 +254,48 @@ function mapItemStateAppearanceToNativeProp(
     tabBarItemIconColor,
     tabBarItemBadgeBackgroundColor,
     tabBarItemTitleFontWeight,
+    tabBarItemTitleFontFamily,
+    tabBarItemTitleFontSize,
+    tabBarItemTitleFontStyle,
+    tabBarItemTitlePositionAdjustment,
   } = itemStateAppearance;
 
+  // 确保 tabBarItemTitlePositionAdjustment 对象结构正确
+  let positionAdjustment: { horizontal?: number; vertical?: number } | undefined;
+  if (tabBarItemTitlePositionAdjustment) {
+    positionAdjustment = {
+      horizontal:
+        tabBarItemTitlePositionAdjustment.horizontal !== undefined
+          ? tabBarItemTitlePositionAdjustment.horizontal
+          : undefined,
+      vertical:
+        tabBarItemTitlePositionAdjustment.vertical !== undefined
+          ? tabBarItemTitlePositionAdjustment.vertical
+          : undefined,
+    };
+    // 如果两个值都是 undefined，则设为 undefined
+    if (
+      positionAdjustment.horizontal === undefined &&
+      positionAdjustment.vertical === undefined
+    ) {
+      positionAdjustment = undefined;
+    }
+  }
+
   return {
-    ...itemStateAppearance,
-    tabBarItemTitleFontColor: processColor(tabBarItemTitleFontColor),
-    tabBarItemIconColor: processColor(tabBarItemIconColor),
-    tabBarItemBadgeBackgroundColor: processColor(
-      tabBarItemBadgeBackgroundColor,
-    ),
+    tabBarItemTitleFontFamily,
+    tabBarItemTitleFontSize,
     tabBarItemTitleFontWeight:
       tabBarItemTitleFontWeight !== undefined
         ? String(tabBarItemTitleFontWeight)
         : undefined,
+    tabBarItemTitleFontStyle,
+    tabBarItemTitleFontColor: processColor(tabBarItemTitleFontColor),
+    tabBarItemTitlePositionAdjustment: positionAdjustment,
+    tabBarItemIconColor: processColor(tabBarItemIconColor),
+    tabBarItemBadgeBackgroundColor: processColor(
+      tabBarItemBadgeBackgroundColor,
+    ),
   };
 }
 

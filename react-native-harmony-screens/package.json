@@ -5,10 +5,10 @@
     "redirectInternalImports": true,
     "autolinking": {
       "cmakeLibraryTargetName": "rnoh_screens",
-      "ohPackageName": "@react-native-oh-tpl/react-native-screens"
+      "ohPackageName": "@react-native-ohos/react-native-screens"
     }
   },
-  "version": "4.14.1-rc.1",
+  "version": "4.14.1-rc.6",
   "description": "",
   "react-native": "src/index.ts",
   "main": "lib/commonjs/index.js",
@@ -20,7 +20,8 @@
     "pack:prod": "npm pack",
     "prepublishOnly": "npm run prepack",
     "update_version": "node ./scripts/update-version.js",
-    "deploy": "node ./scripts/deploy.js"
+    "deploy": "node ./scripts/deploy.js",
+    "codegen": "cd harmony/screens && react-native codegen-harmony --rnoh-module-path ./oh_modules/@rnoh/react-native-openharmony"
   },
   "peerDependencies": {
     "react": "*",
@@ -70,7 +71,8 @@
     "react-native-reanimated": "3.9.0-nightly-20240402-12717cdb5",
     "react-native-safe-area-context": "^4.8.1",
     "react-test-renderer": "^18.2.0",
-    "typescript": "5.4.3"
+    "typescript": "5.4.3",
+    "@react-native/codegen": "^0.75.5"
   },
   "files": [
     "./harmony/*",

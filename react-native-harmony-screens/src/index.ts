@@ -40,7 +40,7 @@ export { default as FullWindowOverlay } from "./components/FullWindowOverlay";
 export { default as ScreenFooter } from './components/ScreenFooter';
 export { default as BottomTabs } from './components/bottom-tabs/BottomTabs';
 export { default as BottomTabsScreen } from './components/bottom-tabs/BottomTabsScreen';
-export { default as StackScreen } from './components/gamma/stack/StackScreen';
+export { default as StackScreen, StackScreenLifecycleState } from './components/gamma/stack/StackScreen';
 export { default as SplitViewHost } from './components/gamma/split-view/SplitViewHost';
 export { default as SplitViewScreen } from './components/gamma/split-view/SplitViewScreen';
 export { default as ScreenStackHost } from './components/gamma/stack/ScreenStackHost';

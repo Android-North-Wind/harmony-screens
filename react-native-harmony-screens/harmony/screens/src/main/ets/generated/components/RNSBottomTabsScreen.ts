@@ -39,7 +39,6 @@ import {
   ViewPropsSelector,
 } from '@rnoh/react-native-openharmony/ts';
 
-
 export namespace RNSBottomTabsScreen {
   export const NAME = "RNSBottomTabsScreen" as const
 
@@ -55,105 +54,130 @@ export namespace RNSBottomTabsScreen {
     selectedIconSfSymbolName?: string;
     orientation?: 'inherit' | 'all' | 'allButUpsideDown' | 'portrait' | 'portraitUp' | 'portraitDown' | 'landscape' | 'landscapeLeft' | 'landscapeRight';
     isFocused?: boolean;
+    tabBarItemBadgeTextColor?: ColorValue | undefined;
+    tabBarItemBadgeBackgroundColor?: ColorValue | undefined;
+    systemItem?: 'none' | 'bookmarks' | 'contacts' | 'downloads' | 'favorites' | 'featured' | 'history' | 'more' | 'mostRecent' | 'mostViewed' | 'recents' | 'search' | 'topRated';
+    specialEffects?: {
+      repeatedTabSelection?: {
+        popToRoot?: boolean;
+        scrollToTop?: boolean;
+      };
+    };
   }
-  
+
   export interface Props extends ViewBaseProps {}
-  
+
   export interface State {}
-  
+
   export interface RawProps extends ViewRawProps, DirectRawProps {}
-  
+
   export class PropsSelector extends ViewPropsSelector<Props, RawProps> {
     get tabKey() {
       return this.rawProps.tabKey ?? "";
     }
-    
+
     get title() {
       return this.rawProps.title ?? "";
     }
-    
+
     get badgeValue() {
       return this.rawProps.badgeValue ?? "";
     }
-    
+
     get iconResource() {
       return this.rawProps.iconResource;
     }
-    
+
     get iconType() {
       return this.rawProps.iconType ?? 'image';
     }
-    
+
     get iconImageSource() {
       return this.rawProps.iconImageSource;
     }
-    
+
     get iconSfSymbolName() {
       return this.rawProps.iconSfSymbolName ?? "";
     }
-    
+
     get selectedIconImageSource() {
       return this.rawProps.selectedIconImageSource;
     }
-    
+
     get selectedIconSfSymbolName() {
       return this.rawProps.selectedIconSfSymbolName ?? "";
     }
-    
+
     get orientation() {
       return this.rawProps.orientation ?? 'inherit';
     }
-    
+
     get isFocused() {
       return this.rawProps.isFocused ?? false;
+    }
+
+    get tabBarItemBadgeBackgroundColor() {
+      return this.tabBarItemBadgeBackgroundColor ?? '#FF3B30';
+    }
+
+    get tabBarItemBadgeTextColor() {
+      return this.tabBarItemBadgeTextColor ?? '#FFFFFF';
+    }
+
+    get systemItem() {
+      return this.rawProps.systemItem ?? 'none';
+    }
+
+    get specialEffects() {
+      return this.rawProps.specialEffects;
     }
   }
 
   export type Descriptor = ComponentDescriptor<
-    typeof NAME,
-    Props,
-    State,
-    RawProps
+  typeof NAME,
+  Props,
+  State,
+  RawProps
   >;
-  
+
   export class DescriptorWrapper extends ViewDescriptorWrapperBase<
-    typeof NAME,
-    Props,
-    State,
-    RawProps,
-    PropsSelector
+  typeof NAME,
+  Props,
+  State,
+  RawProps,
+  PropsSelector
   > {
     protected createPropsSelector() {
       return new PropsSelector(this.descriptor.props, this.descriptor.rawProps)
     }
   }
-  
+
   export interface EventPayloadByName {
-    "onWillAppear": {}
-    "onDidAppear": {}
-    "onWillDisappear": {}
-    "onDidDisappear": {}
-    "onLifecycleStateChange": {previousState: number, newState: number}
+    "willAppear": {}
+    "didAppear": {}
+    "willDisappear": {}
+    "didDisappear": {}
+    "lifecycleStateChange": {previousState: number, newState: number}
   }
-  
+
   export class EventEmitter {
     constructor(private rnInstance: RNInstance, private tag: Tag) {}
-    
+
     emit<TEventName extends keyof EventPayloadByName>(eventName: TEventName, payload: EventPayloadByName[TEventName]) {
       this.rnInstance.emitComponentEvent(this.tag, eventName, payload)
     }
   }
-  
+
   export interface CommandArgvByName {
   }
-  
+
   export class CommandReceiver {
     private listenersByCommandName = new Map<string, Set<(...args: any[]) => void>>()
     private cleanUp: (() => void) | undefined = undefined
-  
+
     constructor(private componentCommandReceiver: RNComponentCommandReceiver, private tag: Tag) {
     }
-  
+
     subscribe<TCommandName extends keyof CommandArgvByName>(commandName: TCommandName, listener: (argv: CommandArgvByName[TCommandName]) => void) {
       if (!this.listenersByCommandName.has(commandName)) {
         this.listenersByCommandName.set(commandName, new Set())
@@ -170,7 +194,7 @@ export namespace RNSBottomTabsScreen {
           }
         })
       }
-  
+
       return () => {
         this.listenersByCommandName.get(commandName)?.delete(listener)
         if (this.listenersByCommandName.get(commandName)?.size ?? 0 === 0) {

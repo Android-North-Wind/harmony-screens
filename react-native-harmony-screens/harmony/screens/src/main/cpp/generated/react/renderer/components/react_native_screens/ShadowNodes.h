@@ -167,5 +167,5 @@ using RNSScreenStackHeaderSubviewShadowNode = ConcreteViewShadowNode<
     RNSScreenStackHeaderSubviewEventEmitter >;
 //    RNSScreenStackHeaderSubviewEventEmitter,
 //    RNSScreenStackHeaderSubviewState>;
-
+    
 } // namespace facebook::react

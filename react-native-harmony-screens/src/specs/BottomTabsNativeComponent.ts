@@ -20,6 +20,16 @@ type NativeFocusChangeEvent = {
   tabKey: string;
 };
 
+type RepeatedTabSelectionNativeEvent = {
+  tabKey: string;
+  specialEffects?: {
+    repeatedTabSelection?: {
+      popToRoot?: boolean;
+      scrollToTop?: boolean;
+    };
+  };
+};
+
 type TabBarItemLabelVisibilityMode =
   | 'auto'
   | 'selected'
@@ -40,6 +50,7 @@ type TabBarControllerMode =
 export interface NativeProps extends ViewProps {
   // Events
   onNativeFocusChange?: DirectEventHandler<NativeFocusChangeEvent>;
+  onRepeatedTabSelection?: DirectEventHandler<RepeatedTabSelectionNativeEvent>;
 
   // Appearance
   // tabBarAppearance?: TabBarAppearance; // Does not work due to codegen issue.

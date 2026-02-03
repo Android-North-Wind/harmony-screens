@@ -63,13 +63,13 @@ export namespace RNSBottomTabs {
     tabBarControllerMode?: 'automatic' | 'tabBar' | 'tabSidebar';
     controlNavigationStateInJS?: boolean;
   }
-  
+
   export interface Props extends ViewBaseProps {}
-  
+
   export interface State {}
-  
+
   export interface RawProps extends ViewRawProps, DirectRawProps {}
-  
+
   export class PropsSelector extends ViewPropsSelector<Props, RawProps> {
     get tabBarBackgroundColor() {
       if (this.rawProps.tabBarBackgroundColor) {
@@ -78,27 +78,27 @@ export namespace RNSBottomTabs {
         return new Color({ r: 255, g: 255, b: 255, a: 255})
       }
     }
-    
+
     get tabBarItemTitleFontFamily() {
       return this.rawProps.tabBarItemTitleFontFamily;
     }
-    
+
     get tabBarItemTitleFontSize() {
       return this.rawProps.tabBarItemTitleFontSize ?? 14;
     }
-    
+
     get tabBarItemTitleFontSizeActive() {
       return this.rawProps.tabBarItemTitleFontSizeActive ?? 14;
     }
-    
+
     get tabBarItemTitleFontWeight() {
       return this.rawProps.tabBarItemTitleFontWeight ?? "normal";
     }
-    
+
     get tabBarItemTitleFontStyle() {
       return this.rawProps.tabBarItemTitleFontStyle ?? "normal";
     }
-    
+
     get tabBarItemTitleFontColor() {
       if (this.rawProps.tabBarItemTitleFontColor) {
         return Color.fromColorValue(this.rawProps.tabBarItemTitleFontColor)
@@ -106,7 +106,7 @@ export namespace RNSBottomTabs {
         return new Color({ r: 0, g: 0, b: 0, a: 255})
       }
     }
-    
+
     get tabBarItemTitleFontColorActive() {
       if (this.rawProps.tabBarItemTitleFontColorActive) {
         return Color.fromColorValue(this.rawProps.tabBarItemTitleFontColorActive)
@@ -114,7 +114,7 @@ export namespace RNSBottomTabs {
         return new Color({ r: 0, g: 122, b: 255, a: 255})
       }
     }
-    
+
     get tabBarItemIconColor() {
       if (this.rawProps.tabBarItemIconColor) {
         return Color.fromColorValue(this.rawProps.tabBarItemIconColor)
@@ -122,7 +122,7 @@ export namespace RNSBottomTabs {
         return new Color({ r: 0, g: 0, b: 0, a: 255})
       }
     }
-    
+
     get tabBarItemIconColorActive() {
       if (this.rawProps.tabBarItemIconColorActive) {
         return Color.fromColorValue(this.rawProps.tabBarItemIconColorActive)
@@ -130,7 +130,7 @@ export namespace RNSBottomTabs {
         return new Color({ r: 0, g: 122, b: 255, a: 255})
       }
     }
-    
+
     get tabBarItemActiveIndicatorColor() {
       if (this.rawProps.tabBarItemActiveIndicatorColor) {
         return Color.fromColorValue(this.rawProps.tabBarItemActiveIndicatorColor)
@@ -138,11 +138,11 @@ export namespace RNSBottomTabs {
         return new Color({ r: 0, g: 122, b: 255, a: 255})
       }
     }
-    
+
     get tabBarItemActiveIndicatorEnabled() {
       return this.rawProps.tabBarItemActiveIndicatorEnabled ?? true;
     }
-    
+
     get tabBarItemRippleColor() {
       if (this.rawProps.tabBarItemRippleColor) {
         return Color.fromColorValue(this.rawProps.tabBarItemRippleColor)
@@ -150,11 +150,11 @@ export namespace RNSBottomTabs {
         return new Color({ r: 0, g: 0, b: 0, a: 0})
       }
     }
-    
+
     get tabBarItemLabelVisibilityMode() {
       return this.rawProps.tabBarItemLabelVisibilityMode ?? 'auto';
     }
-    
+
     get tabBarTintColor() {
       if (this.rawProps.tabBarTintColor) {
         return Color.fromColorValue(this.rawProps.tabBarTintColor)
@@ -162,61 +162,70 @@ export namespace RNSBottomTabs {
         return new Color({ r: 0, g: 122, b: 255, a: 255})
       }
     }
-    
+
     get tabBarMinimizeBehavior() {
       return this.rawProps.tabBarMinimizeBehavior ?? 'automatic';
     }
-    
+
     get tabBarControllerMode() {
       return this.rawProps.tabBarControllerMode ?? 'automatic';
     }
-    
+
     get controlNavigationStateInJS() {
       return this.rawProps.controlNavigationStateInJS ?? false;
     }
   }
 
   export type Descriptor = ComponentDescriptor<
-    typeof NAME,
-    Props,
-    State,
-    RawProps
+  typeof NAME,
+  Props,
+  State,
+  RawProps
   >;
-  
+
   export class DescriptorWrapper extends ViewDescriptorWrapperBase<
-    typeof NAME,
-    Props,
-    State,
-    RawProps,
-    PropsSelector
+  typeof NAME,
+  Props,
+  State,
+  RawProps,
+  PropsSelector
   > {
     protected createPropsSelector() {
       return new PropsSelector(this.descriptor.props, this.descriptor.rawProps)
     }
   }
-  
+
   export interface EventPayloadByName {
     "onNativeFocusChange": {tabKey: string}
+    "onRepeatedTabSelection": {
+      tabKey: string,
+      specialEffects?: {
+        repeatedTabSelection?: {
+          popToRoot?: boolean,
+          scrollToTop?: boolean,
+        }
+      }
+    }
   }
-  
+
   export class EventEmitter {
     constructor(private rnInstance: RNInstance, private tag: Tag) {}
-    
+
     emit<TEventName extends keyof EventPayloadByName>(eventName: TEventName, payload: EventPayloadByName[TEventName]) {
       this.rnInstance.emitComponentEvent(this.tag, eventName, payload)
     }
   }
-  
+
   export interface CommandArgvByName {
   }
-  
+
   export class CommandReceiver {
     private listenersByCommandName = new Map<string, Set<(...args: any[]) => void>>()
     private cleanUp: (() => void) | undefined = undefined
-  
+
     constructor(private componentCommandReceiver: RNComponentCommandReceiver, private tag: Tag) {
     }
-  
+
     subscribe<TCommandName extends keyof CommandArgvByName>(commandName: TCommandName, listener: (argv: CommandArgvByName[TCommandName]) => void) {
       if (!this.listenersByCommandName.has(commandName)) {
         this.listenersByCommandName.set(commandName, new Set())
@@ -233,7 +242,7 @@ export namespace RNSBottomTabs {
           }
         })
       }
-  
+
       return () => {
         this.listenersByCommandName.get(commandName)?.delete(listener)
         if (this.listenersByCommandName.get(commandName)?.size ?? 0 === 0) {

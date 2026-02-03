@@ -13,6 +13,7 @@ import featureFlags from '../../flags';
 import type {
   BottomTabsProps,
   NativeFocusChangeEvent,
+  RepeatedTabSelectionEvent,
 } from './BottomTabs.types';
 import { bottomTabsDebugLog } from '../../private/logging';
 
@@ -24,6 +25,7 @@ function BottomTabs(props: BottomTabsProps) {
 
   const {
     onNativeFocusChange,
+    onRepeatedTabSelection,
     experimentalControlNavigationStateInJS = featureFlags.experiment
       .controlledBottomTabs,
     ...filteredProps
@@ -54,10 +56,23 @@ function BottomTabs(props: BottomTabsProps) {
     [onNativeFocusChange],
   );
 
+  const onRepeatedTabSelectionCallback = React.useCallback(
+    (event: NativeSyntheticEvent<RepeatedTabSelectionEvent>) => {
+      bottomTabsDebugLog(
+        `BottomTabs [${
+          componentNodeHandle.current ?? -1
+        }] onRepeatedTabSelection: ${JSON.stringify(event.nativeEvent)}`,
+      );
+      onRepeatedTabSelection?.(event);
+    },
+    [onRepeatedTabSelection],
+  );
+
   return (
     <BottomTabsNativeComponent
       style={styles.fillParent}
       onNativeFocusChange={onNativeFocusChangeCallback}
+      onRepeatedTabSelection={onRepeatedTabSelectionCallback}
       controlNavigationStateInJS={experimentalControlNavigationStateInJS}
       // @ts-ignore suppress ref - debug only
       ref={componentNodeRef}

@@ -113,6 +113,9 @@ class BaseReactNativeScreensPackageEventEmitRequestHandler : public EventEmitReq
             "changeText",
             "close",
             "open",
+            "didAppear",
+            "didDisappear",
+            "lifecycleStateChange",
         };
 
         if (std::find(supportedComponentNames.begin(), supportedComponentNames.end(), componentName) != supportedComponentNames.end() &&

@@ -30,6 +30,8 @@ import {
   RNViewBase,
 } from '@rnoh/react-native-openharmony';
 import { RNC } from '../generated/ts';
+import { window } from '@kit.ArkUI';
+import common from '@ohos.app.ability.common';
 
 export type RNSBottomTabsScreenDescriptor = Descriptor<"RNSBottomTabsScreen", RNC.RNSBottomTabsScreen.Props>
 
@@ -77,6 +79,11 @@ export struct RNSBottomTabsScreen {
     if (this.nativeViewIsVisible) {
       this.emitDidDisappear()
     }
+    // 组件销毁时，如果当前是选中状态，恢复默认方向
+    if (this.isFocused) {
+      console.log('RNSBottomTabsScreen aboutToDisappear, restoring default orientation')
+      this.restoreDefaultOrientation()
+    }
   }
 
   onDescriptorChange() {
@@ -117,10 +124,16 @@ export struct RNSBottomTabsScreen {
     if (selectedIconSfSymbolNameValue !== undefined) {
       this.selectedIconSfSymbolName = selectedIconSfSymbolNameValue || ""
     }
+
     const orientationValue = this.descriptor.rawProps['orientation'] as string | undefined
-    if (orientationValue !== undefined) {
-      this.orientation = orientationValue || "inherit"
+    const newOrientation = orientationValue !== undefined ? (orientationValue || "inherit") : "inherit"
+    const orientationChanged = this.orientation !== newOrientation
+    this.orientation = newOrientation
+
+    if (orientationChanged && this.isFocused) {
+      this.setScreenOrientation()
     }
+
     const isFocusedValue = this.descriptor.rawProps['isFocused'] as boolean | undefined
     if (isFocusedValue !== undefined) {
       const wasFocused = this.isFocused
@@ -128,8 +141,10 @@ export struct RNSBottomTabsScreen {
 
       if (!wasFocused && isNowFocused) {
         this.emitWillAppear()
+        this.setScreenOrientation()
       } else if (wasFocused && !isNowFocused) {
         this.emitWillDisappear()
+        this.restoreDefaultOrientation()
       }
       this.isFocused = isNowFocused
     }
@@ -139,6 +154,9 @@ export struct RNSBottomTabsScreen {
     if (!this.nativeViewIsVisible) {
       this.nativeViewIsVisible = true
       this.emitDidAppear()
+      if (this.isFocused) {
+        this.setScreenOrientation()
+      }
     }
   }
 
@@ -146,30 +164,94 @@ export struct RNSBottomTabsScreen {
     if (this.nativeViewIsVisible) {
       this.nativeViewIsVisible = false
       this.emitDidDisappear()
+      if (this.isFocused) {
+        this.restoreDefaultOrientation()
+      }
     }
   }
 
   emitWillAppear() {
     if (this.eventEmitter) {
-      this.eventEmitter.emit("onWillAppear", {})
+      this.eventEmitter.emit("willAppear", {})
     }
   }
 
   emitDidAppear() {
     if (this.eventEmitter) {
-      this.eventEmitter.emit("onDidAppear", {})
+      this.eventEmitter.emit("didAppear", {})
     }
   }
 
   emitWillDisappear() {
     if (this.eventEmitter) {
-      this.eventEmitter.emit("onWillDisappear", {})
+      this.eventEmitter.emit("willDisappear", {})
     }
   }
 
   emitDidDisappear() {
     if (this.eventEmitter) {
-      this.eventEmitter.emit("onDidDisappear", {})
+      this.eventEmitter.emit("didDisappear", {})
+    }
+  }
+
+  private setScreenOrientation() {
+    if (!this.descriptor) {
+      console.log('RNSBottomTabsScreen setScreenOrientation: descriptor is null')
+      return
+    }
+
+    if (!this.orientation || this.orientation === "inherit") {
+      console.log('RNSBottomTabsScreen setScreenOrientation: orientation is inherit/undefined, using default (UNSPECIFIED)')
+      this.restoreDefaultOrientation()
+      return
+    }
+
+    let orientationTmp = -1 // window.Orientation.UNSPECIFIED
+
+    if (this.orientation === "all") {
+      orientationTmp = window.Orientation.AUTO_ROTATION
+    } else if (this.orientation === "portrait" || this.orientation === "portraitUp" || this.orientation === "portrait_up") {
+      orientationTmp = window.Orientation.PORTRAIT
+    } else if (this.orientation === "portraitDown" || this.orientation === "portrait_down") {
+      orientationTmp = window.Orientation.PORTRAIT_INVERTED
+    } else if (this.orientation === "landscape" || this.orientation === "landscapeRight" || this.orientation === "landscape_right") {
+      orientationTmp = window.Orientation.LANDSCAPE
+    } else if (this.orientation === "landscapeLeft" || this.orientation === "landscape_left") {
+      orientationTmp = window.Orientation.LANDSCAPE_INVERTED
+    } else if (this.orientation === "allButUpsideDown") {
+      orientationTmp = window.Orientation.AUTO_ROTATION
+    } else {
+      console.warn('RNSBottomTabsScreen setScreenOrientation: unknown orientation value: ' + this.orientation + ', using default (UNSPECIFIED)')
+      orientationTmp = window.Orientation.UNSPECIFIED
+    }
+
+    this.applyOrientation(orientationTmp)
+  }
+
+  private restoreDefaultOrientation() {
+    console.log('RNSBottomTabsScreen restoreDefaultOrientation: restoring to UNSPECIFIED (default)')
+    this.applyOrientation(window.Orientation.UNSPECIFIED)
+  }
+
+  private applyOrientation(orientationTmp: number) {
+    try {
+      let context = this.ctx.uiAbilityContext as common.UIAbilityContext
+      if (!context) {
+        console.error('RNSBottomTabsScreen applyOrientation: uiAbilityContext is null')
+        return
+      }
+
+      window.getLastWindow(context).then((lastWindow) => {
+        if (!lastWindow) {
+          console.error('RNSBottomTabsScreen applyOrientation: getLastWindow returned null')
+          return
+        }
+        lastWindow.setPreferredOrientation(orientationTmp)
+      }).catch((error: Error) => {
+        console.error('RNSBottomTabsScreen applyOrientation getLastWindow error: ' + error)
+      })
+    } catch (error) {
+      console.error('RNSBottomTabsScreen applyOrientation context error: ' + error)
     }
   }
 

@@ -9,6 +9,16 @@ export type NativeFocusChangeEvent = {
   tabKey: string;
 };
 
+export type RepeatedTabSelectionEvent = {
+  tabKey: string;
+  specialEffects?: {
+    repeatedTabSelection?: {
+      popToRoot?: boolean;
+      scrollToTop?: boolean;
+    };
+  };
+};
+
 // Android-specific
 export type TabBarItemLabelVisibilityMode =
   | 'auto'
@@ -38,6 +48,15 @@ export interface BottomTabsProps extends ViewProps {
    */
   onNativeFocusChange?: (
     event: NativeSyntheticEvent<NativeFocusChangeEvent>,
+  ) => void;
+  /**
+   * A callback that gets invoked when user repeatedly selects already focused tab.
+   *
+   * Use this event on JS side to implement `popToRoot` and `scrollToTop` behaviors,
+   * since Harmony native layer cannot directly control React Navigation stacks or ScrollView refs.
+   */
+  onRepeatedTabSelection?: (
+    event: NativeSyntheticEvent<RepeatedTabSelectionEvent>,
   ) => void;
   // #endregion Events
 
