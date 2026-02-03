@@ -45,6 +45,7 @@ export { default as SplitViewHost } from './components/gamma/split-view/SplitVie
 export { default as SplitViewScreen } from './components/gamma/split-view/SplitViewScreen';
 export { default as ScreenStackHost } from './components/gamma/stack/ScreenStackHost';
 export { default as ScreenContentWrapper } from './components/ScreenContentWrapper';
+export { default as SafeAreaView } from './components/safe-area/SafeAreaView';
 
 /*
  * Utils
