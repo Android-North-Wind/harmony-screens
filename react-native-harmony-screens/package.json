@@ -5,7 +5,7 @@
     "redirectInternalImports": true,
     "autolinking": {
       "cmakeLibraryTargetName": "rnoh_screens",
-      "ohPackageName": "@react-native-oh-tpl/react-native-screens"
+      "ohPackageName": "@react-native-ohos/react-native-screens"
     }
   },
   "version": "4.9.0-rc.1",
@@ -25,7 +25,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-screens": "4.8.0"
+    "react-native-screens": "4.15.1"
   },
   "keywords": [],
   "author": "",
