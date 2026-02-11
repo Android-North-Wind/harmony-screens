@@ -43,6 +43,9 @@
 #include "RNOH/generated/components/RNSScreenStackHeaderSubviewJSIBinder.h"
 #include "RNOH/generated/components/RNSScreenStackJSIBinder.h"
 #include "RNOH/generated/components/RNSSearchBarJSIBinder.h"
+#include "RNOH/generated/components/RNSBottomTabsJSIBinder.h"
+#include "RNOH/generated/components/RNSBottomTabsScreenJSIBinder.h"
+#include "RNOH/generated/components/RNSStackScreenJSIBinder.h"
 
 namespace rnoh {
 
@@ -78,6 +81,9 @@ class BaseReactNativeScreensPackageEventEmitRequestHandler : public EventEmitReq
             "RNSScreenStackHeaderSubview",
             "RNSScreenStack",
             "RNSSearchBar",
+            "RNSBottomTabs",
+            "RNSBottomTabsScreen",
+            "RNSStackScreen",
         };
 
         std::vector<std::string> supportedEventNames = {
@@ -113,6 +119,15 @@ class BaseReactNativeScreensPackageEventEmitRequestHandler : public EventEmitReq
             "changeText",
             "close",
             "open",
+            "didAppear",
+            "didDisappear",
+            "lifecycleStateChange",
+            "onNativeFocusChange",
+            "repeatedTabSelection",
+            "onWillAppear",
+            "onDidAppear",
+            "onWillDisappear",
+            "onDidDisappear"
         };
 
         if (std::find(supportedComponentNames.begin(), supportedComponentNames.end(), componentName) != supportedComponentNames.end() &&
@@ -144,6 +159,9 @@ class BaseReactNativeScreensPackage : public Package {
             facebook::react::concreteComponentDescriptorProvider<facebook::react::RNSScreenStackHeaderSubviewComponentDescriptor>(),
             facebook::react::concreteComponentDescriptorProvider<facebook::react::RNSScreenStackComponentDescriptor>(),
             facebook::react::concreteComponentDescriptorProvider<facebook::react::RNSSearchBarComponentDescriptor>(),
+            facebook::react::concreteComponentDescriptorProvider<facebook::react::RNSBottomTabsComponentDescriptor>(),
+            facebook::react::concreteComponentDescriptorProvider<facebook::react::RNSBottomTabsScreenComponentDescriptor>(),
+            facebook::react::concreteComponentDescriptorProvider<facebook::react::RNSStackScreenComponentDescriptor>(),
         };
     }
 
@@ -160,6 +178,9 @@ class BaseReactNativeScreensPackage : public Package {
             {"RNSScreenStackHeaderSubview", std::make_shared<RNSScreenStackHeaderSubviewJSIBinder>()},
             {"RNSScreenStack", std::make_shared<RNSScreenStackJSIBinder>()},
             {"RNSSearchBar", std::make_shared<RNSSearchBarJSIBinder>()},
+            {"RNSBottomTabsScreen", std::make_shared<RNSBottomTabsScreenJSIBinder>()},
+            {"RNSBottomTabs", std::make_shared<RNSBottomTabsJSIBinder>()},
+            {"RNSStackScreen", std::make_shared<RNSStackScreenJSIBinder>()},
         };
     };
 

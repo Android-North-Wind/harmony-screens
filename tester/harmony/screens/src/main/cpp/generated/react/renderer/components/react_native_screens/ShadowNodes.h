@@ -167,5 +167,39 @@ using RNSScreenStackHeaderSubviewShadowNode = ConcreteViewShadowNode<
     RNSScreenStackHeaderSubviewEventEmitter >;
 //    RNSScreenStackHeaderSubviewEventEmitter,
 //    RNSScreenStackHeaderSubviewState>;
+    
+JSI_EXPORT extern const char RNSBottomTabsScreenComponentName[];
 
+/*
+ * `ShadowNode` for <RNSBottomTabsScreen> component.
+ */
+using RNSBottomTabsScreenShadowNode = ConcreteViewShadowNode<
+    RNSBottomTabsScreenComponentName,
+    RNSBottomTabsScreenProps,
+    RNSBottomTabsScreenEventEmitter >;
+
+
+JSI_EXPORT extern const char RNSBottomTabsComponentName[];
+
+/*
+ * `ShadowNode` for <RNSBottomTabs> component.
+ */
+using RNSBottomTabsShadowNode = ConcreteViewShadowNode<
+    RNSBottomTabsComponentName,
+    RNSBottomTabsProps,
+    RNSBottomTabsEventEmitter >;
+//    RNSBottomTabsScreenState>;
+    
+JSI_EXPORT extern const char RNSStackScreenComponentName[];
+
+/*
+ * `ShadowNode` for <RNSStackScreen> component.
+ */
+using RNSStackScreenShadowNode = ConcreteViewShadowNode<
+    RNSStackScreenComponentName,
+    RNSStackScreenProps,
+    RNSStackScreenEventEmitter >;
+//    RNSBottomTabsScreenState>;
+    
+    
 } // namespace facebook::react
