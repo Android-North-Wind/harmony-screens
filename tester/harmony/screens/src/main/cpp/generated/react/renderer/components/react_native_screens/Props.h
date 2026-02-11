@@ -212,6 +212,79 @@ class RNSModalScreenProps final : public ViewProps {
   bool nativeBackButtonDismissalEnabled{false};
 };
 
+enum class RNSSafeAreaViewInsetType { All, System, Interface };
+
+static inline void fromRawValue(const PropsParserContext &context, const RawValue &value,
+                                RNSSafeAreaViewInsetType &result) {
+    auto string = (std::string)value;
+    if (string == "all") {
+        result = RNSSafeAreaViewInsetType::All;
+        return;
+    }
+    if (string == "system") {
+        result = RNSSafeAreaViewInsetType::System;
+        return;
+    }
+    if (string == "interface") {
+        result = RNSSafeAreaViewInsetType::Interface;
+        return;
+    }
+    abort();
+}
+
+static inline std::string toString(const RNSSafeAreaViewInsetType &value) {
+    switch (value) {
+    case RNSSafeAreaViewInsetType::All:
+        return "all";
+    case RNSSafeAreaViewInsetType::System:
+        return "system";
+    case RNSSafeAreaViewInsetType::Interface:
+        return "interface";
+    }
+}
+struct RNSSafeAreaViewEdgesStruct {
+    bool top;
+    bool right;
+    bool bottom;
+    bool left;
+};
+
+static inline void fromRawValue(const PropsParserContext &context, const RawValue &value,
+                                RNSSafeAreaViewEdgesStruct &result) {
+    auto map = (std::unordered_map<std::string, RawValue>)value;
+
+    auto tmp_top = map.find("top");
+    if (tmp_top != map.end()) {
+        fromRawValue(context, tmp_top->second, result.top);
+    }
+    auto tmp_right = map.find("right");
+    if (tmp_right != map.end()) {
+        fromRawValue(context, tmp_right->second, result.right);
+    }
+    auto tmp_bottom = map.find("bottom");
+    if (tmp_bottom != map.end()) {
+        fromRawValue(context, tmp_bottom->second, result.bottom);
+    }
+    auto tmp_left = map.find("left");
+    if (tmp_left != map.end()) {
+        fromRawValue(context, tmp_left->second, result.left);
+    }
+}
+
+static inline std::string toString(const RNSSafeAreaViewEdgesStruct &value) {
+    return "[Object RNSSafeAreaViewEdgesStruct]";
+}
+class RNSSafeAreaViewProps final : public ViewProps {
+public:
+    RNSSafeAreaViewProps() = default;
+    RNSSafeAreaViewProps(const PropsParserContext &context, const RNSSafeAreaViewProps &sourceProps,
+                         const RawProps &rawProps);
+
+#pragma mark - Props
+
+    RNSSafeAreaViewEdgesStruct edges{};
+    RNSSafeAreaViewInsetType insetType{RNSSafeAreaViewInsetType::All};
+};
 class RNSScreenContainerProps final : public ViewProps {
  public:
   RNSScreenContainerProps() = default;

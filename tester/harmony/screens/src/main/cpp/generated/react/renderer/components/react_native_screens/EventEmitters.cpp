@@ -138,8 +138,22 @@ $payload.setProperty(runtime, "isStable", $event.isStable);
   });
 }
 
+void RNSSafeAreaViewEventEmitter::onStatusBarHeightChange(OnStatusBarHeightChange $event) const {
+  dispatchEvent("statusBarHeightChange", [$event=std::move($event)](jsi::Runtime &runtime) {
+    auto $payload = jsi::Object(runtime);
+    $payload.setProperty(runtime, "statusBarHeight", $event.statusBarHeight);
+    return $payload;
+  });
+}
 
 
+void RNSSafeAreaViewEventEmitter::onNavigationBarHeightChange(OnNavigationBarHeightChange $event) const {
+  dispatchEvent("navigationBarHeightChange", [$event=std::move($event)](jsi::Runtime &runtime) {
+    auto $payload = jsi::Object(runtime);
+    $payload.setProperty(runtime, "navigationBarHeight", $event.navigationBarHeight);
+    return $payload;
+  });
+}
 
 
 void RNSScreenEventEmitter::onAppear(OnAppear $event) const {

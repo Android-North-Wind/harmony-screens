@@ -379,4 +379,19 @@ class RNSStackScreenEventEmitter : public ViewEventEmitter {
 
   void onDidDisappear(OnDidDisappear value) const;
 };
+class RNSSafeAreaViewEventEmitter : public ViewEventEmitter {
+public:
+    using ViewEventEmitter::ViewEventEmitter;
+
+    struct OnStatusBarHeightChange {
+        double statusBarHeight;
+    };
+
+    struct OnNavigationBarHeightChange {
+        double navigationBarHeight;
+    };
+    void onStatusBarHeightChange(OnStatusBarHeightChange value) const;
+
+    void onNavigationBarHeightChange(OnNavigationBarHeightChange value) const;
+};
 } // namespace facebook::react

@@ -144,6 +144,18 @@ using RNSScreenShadowNode = ConcreteViewShadowNode<
 //    RNSScreenEventEmitter,
 //    RNSScreenState>;
     
+JSI_EXPORT extern const char RNSSafeAreaViewComponentName[];
+
+/*
+ * `ShadowNode` for <RNSSafeAreaView> component.
+ */
+using RNSSafeAreaViewShadowNode = ConcreteViewShadowNode<
+    RNSSafeAreaViewComponentName,
+    RNSSafeAreaViewProps,
+    RNSSafeAreaViewEventEmitter >;
+//    RNSSafeAreaViewEventEmitter,
+//    RNSSafeAreaViewState>; 
+    
 JSI_EXPORT extern const char RNSScreenStackHeaderConfigComponentName[];
 
 /*
