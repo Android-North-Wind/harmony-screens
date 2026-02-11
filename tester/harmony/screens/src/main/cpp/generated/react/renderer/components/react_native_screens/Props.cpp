@@ -82,6 +82,14 @@ RNSModalScreenProps::RNSModalScreenProps(
     navigationBarHidden(convertRawProp(context, rawProps, "navigationBarHidden", sourceProps.navigationBarHidden, {false})),
     nativeBackButtonDismissalEnabled(convertRawProp(context, rawProps, "nativeBackButtonDismissalEnabled", sourceProps.nativeBackButtonDismissalEnabled, {false}))
       {}
+RNSSafeAreaViewProps::RNSSafeAreaViewProps(
+    const PropsParserContext &context,
+    const RNSSafeAreaViewProps &sourceProps,
+    const RawProps &rawProps): ViewProps(context, sourceProps, rawProps),
+
+    edges(convertRawProp(context, rawProps, "edges", sourceProps.edges, {})),
+    insetType(convertRawProp(context, rawProps, "insetType", sourceProps.insetType, {RNSSafeAreaViewInsetType::All}))
+      {}
 RNSScreenContainerProps::RNSScreenContainerProps(
     const PropsParserContext &context,
     const RNSScreenContainerProps &sourceProps,

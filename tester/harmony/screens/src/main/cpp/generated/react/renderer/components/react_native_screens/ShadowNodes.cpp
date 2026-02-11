@@ -45,6 +45,7 @@ extern const char RNSSearchBarComponentName[] = "RNSSearchBar";
 extern const char RNSFullWindowOverlayComponentName[] = "RNSFullWindowOverlay";
 extern const char RNSModalScreenComponentName[] = "RNSModalScreen";
 extern const char RNSScreenComponentName[] = "RNSScreen";
+extern const char RNSSafeAreaViewComponentName[] = "RNSSafeAreaView";
 extern const char RNSScreenStackHeaderConfigComponentName[] = "RNSScreenStackHeaderConfig";
 extern const char RNSScreenStackHeaderSubviewComponentName[] = "RNSScreenStackHeaderSubview";
 extern const char RNSBottomTabsScreenComponentName[] = "RNSBottomTabsScreen";

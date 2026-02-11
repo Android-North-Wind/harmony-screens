@@ -48,6 +48,7 @@ using RNSSearchBarComponentDescriptor = ConcreteComponentDescriptor<RNSSearchBar
        
 using RNSFullWindowOverlayComponentDescriptor = ConcreteComponentDescriptor<RNSFullWindowOverlayShadowNode>;
 using RNSModalScreenComponentDescriptor = ConcreteComponentDescriptor<RNSModalScreenShadowNode>;
+using RNSSafeAreaViewComponentDescriptor = ConcreteComponentDescriptor<RNSSafeAreaViewShadowNode>;
 using RNSScreenComponentDescriptor = ConcreteComponentDescriptor<RNSScreenShadowNode>;
 using RNSScreenStackHeaderConfigComponentDescriptor = ConcreteComponentDescriptor<RNSScreenStackHeaderConfigShadowNode>;
 using RNSScreenStackHeaderSubviewComponentDescriptor = ConcreteComponentDescriptor<RNSScreenStackHeaderSubviewShadowNode>;

@@ -46,6 +46,7 @@
 #include "RNOH/generated/components/RNSBottomTabsJSIBinder.h"
 #include "RNOH/generated/components/RNSBottomTabsScreenJSIBinder.h"
 #include "RNOH/generated/components/RNSStackScreenJSIBinder.h"
+#include "RNOH/generated/components/RNSSafeAreaViewJSIBinder.h"
 
 namespace rnoh {
 
@@ -84,6 +85,7 @@ class BaseReactNativeScreensPackageEventEmitRequestHandler : public EventEmitReq
             "RNSBottomTabs",
             "RNSBottomTabsScreen",
             "RNSStackScreen",
+			"RNSSafeAreaView",
         };
 
         std::vector<std::string> supportedEventNames = {
@@ -127,7 +129,9 @@ class BaseReactNativeScreensPackageEventEmitRequestHandler : public EventEmitReq
             "onWillAppear",
             "onDidAppear",
             "onWillDisappear",
-            "onDidDisappear"
+            "onDidDisappear",
+			"onStatusBarHeightChange",
+            "onNavigationBarHeightChange",
         };
 
         if (std::find(supportedComponentNames.begin(), supportedComponentNames.end(), componentName) != supportedComponentNames.end() &&
@@ -150,6 +154,7 @@ class BaseReactNativeScreensPackage : public Package {
         return {
             facebook::react::concreteComponentDescriptorProvider<facebook::react::RNSFullWindowOverlayComponentDescriptor>(),
             facebook::react::concreteComponentDescriptorProvider<facebook::react::RNSModalScreenComponentDescriptor>(),
+            facebook::react::concreteComponentDescriptorProvider<facebook::react::RNSSafeAreaViewComponentDescriptor>(),
             facebook::react::concreteComponentDescriptorProvider<facebook::react::RNSScreenContainerComponentDescriptor>(),
             facebook::react::concreteComponentDescriptorProvider<facebook::react::RNSScreenContentWrapperComponentDescriptor>(),
             facebook::react::concreteComponentDescriptorProvider<facebook::react::RNSScreenFooterComponentDescriptor>(),
@@ -169,6 +174,7 @@ class BaseReactNativeScreensPackage : public Package {
         return {
             {"RNSFullWindowOverlay", std::make_shared<RNSFullWindowOverlayJSIBinder>()},
             {"RNSModalScreen", std::make_shared<RNSModalScreenJSIBinder>()},
+            {"RNSSafeAreaView", std::make_shared<RNSSafeAreaViewJSIBinder>()},
             {"RNSScreenContainer", std::make_shared<RNSScreenContainerJSIBinder>()},
             {"RNSScreenContentWrapper", std::make_shared<RNSScreenContentWrapperJSIBinder>()},
             {"RNSScreenFooter", std::make_shared<RNSScreenFooterJSIBinder>()},
