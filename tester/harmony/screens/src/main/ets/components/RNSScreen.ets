@@ -482,7 +482,13 @@ export struct RNSScreen {
     if (!this.gestureEnabled || !this.fullScreenSwipeEnabled) {
       return false;
     }
+    if (JSON.stringify(this.gestureEnabled) === '"false"' || JSON.stringify(this.gestureEnabled) === '"undefined"') {
+      return false;
+    }
 
+    if (JSON.stringify(this.fullScreenSwipeEnabled) === '"false"' || JSON.stringify(this.fullScreenSwipeEnabled) === '"undefined"') {
+      return false;
+    }
     let inDistance: boolean = this.isInGestureResponseDistance(event);
     if (!inDistance) {
       return false;
