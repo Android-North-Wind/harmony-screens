@@ -1,3 +1,5 @@
+'use client';
+
 import React from "react";
 import { Animated, View, Platform, NativeSyntheticEvent } from "react-native";
 
@@ -28,6 +30,7 @@ import {
   resolveSheetInitialDetentIndex,
   resolveSheetLargestUndimmedDetent,
 } from './helpers/sheet';
+import { parseBooleanToOptionalBooleanNativeProp } from '../utils';
 
 type NativeProps = ScreenNativeComponentProps | ModalScreenNativeComponentProps;
 const AnimatedNativeScreen = Animated.createAnimatedComponent(
@@ -112,16 +115,23 @@ export const InnerScreen = React.forwardRef<View, ScreenProps>(
         sheetInitialDetentIndex,
         resolvedSheetAllowedDetents.length - 1,
       );
-      
-      // Due to how Yoga resolves layout, we need to have different components for modal nad non-modal screens
-      const AnimatedScreen =
-        Platform.OS === "android" ||
-        stackPresentation === undefined ||
-        stackPresentation === "push" ||
-        stackPresentation === "containedModal" ||
-        stackPresentation === "containedTransparentModal"
-          ? AnimatedNativeScreen
-          : AnimatedNativeModalScreen;
+
+      // Due to how Yoga resolves layout, we need to have different components for modal nad non-modal screens (there is a need for different
+      // shadow nodes).
+      const shouldUseModalScreenComponent = Platform.select({
+        ios: !(
+          stackPresentation === undefined ||
+          stackPresentation === 'push' ||
+          stackPresentation === 'containedModal' ||
+          stackPresentation === 'containedTransparentModal'
+        ),
+        android: false,
+        default: false,
+      });
+
+      const AnimatedScreen = shouldUseModalScreenComponent
+        ? AnimatedNativeModalScreen
+        : AnimatedNativeScreen;
 
       let {
         // Filter out active prop in this case because it is unused and
@@ -131,7 +141,9 @@ export const InnerScreen = React.forwardRef<View, ScreenProps>(
         activityState,
         children,
         isNativeStack,
+        fullScreenSwipeEnabled,
         gestureResponseDistance,
+        scrollEdgeEffects,
         onGestureCancel,
         onHeaderHeightChange,
         style,
@@ -161,16 +173,16 @@ export const InnerScreen = React.forwardRef<View, ScreenProps>(
         if (ref?.viewConfig?.validAttributes?.style) {
           ref.viewConfig.validAttributes.style = {
             ...ref.viewConfig.validAttributes.style,
-            display: false,
+            display: null,
           };
           setRef(ref);
         } else if (ref?._viewConfig?.validAttributes?.style) {
           ref._viewConfig.validAttributes.style = {
             ...ref._viewConfig.validAttributes.style,
-            display: false,
+            display: null,
           };
-          setRef(ref);
         }
+        setRef(ref);
       };
 
       // RNOH patch: native header is not included into Yoga calculations,
@@ -225,6 +237,9 @@ export const InnerScreen = React.forwardRef<View, ScreenProps>(
             onHeaderHeightChange={onHeaderHeightChangeHandler}
             sheetExpandsWhenScrolledToEdge={sheetExpandsWhenScrolledToEdge}
             sheetInitialDetent={resolvedSheetInitialDetentIndex}
+            fullScreenSwipeEnabled={parseBooleanToOptionalBooleanNativeProp(
+              fullScreenSwipeEnabled,
+            )}
             gestureResponseDistance={{
               start: gestureResponseDistance?.start ?? -1,
               end: gestureResponseDistance?.end ?? -1,
@@ -250,6 +265,10 @@ export const InnerScreen = React.forwardRef<View, ScreenProps>(
                     { useNativeDriver: true }
                   )
             }
+            bottomScrollEdgeEffect={scrollEdgeEffects?.bottom}
+            leftScrollEdgeEffect={scrollEdgeEffects?.left}
+            rightScrollEdgeEffect={scrollEdgeEffects?.right}
+            topScrollEdgeEffect={scrollEdgeEffects?.top}
           >
             {!isNativeStack ? ( // see comment of this prop in types.tsx for information why it is needed
               children

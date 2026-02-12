@@ -9,12 +9,18 @@ import type {
 } from "react-native/Libraries/Types/CodegenTypes";
 
 // RNOH Patch
-type DirectionType = "inherit" | "ltr" | "rtl";
+type DirectionType = 'rtl' | 'ltr';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type OnAttachedEvent = Readonly<{}>;
 // eslint-disable-next-line @typescript-eslint/ban-types
 type OnDetachedEvent = Readonly<{}>;
+type OnPressHeaderBarButtonItemEvent = Readonly<{
+  buttonId: string;
+}>;
+type OnPressHeaderBarButtonMenuItemEvent = Readonly<{
+  menuId: string;
+}>;
 
 type BackButtonDisplayMode = "minimal" | "default" | "generic";
 
@@ -73,6 +79,10 @@ export interface NativeProps extends ViewProps {
   blurEffect?: WithDefault<BlurEffect, 'none'>;
   // TODO: implement this props on iOS
   topInsetEnabled?: boolean;
+  headerLeftBarButtonItems?: Object; // any[];
+  headerRightBarButtonItems?: Object; // any[];
+  onPressHeaderBarButtonItem?: DirectEventHandler<OnPressHeaderBarButtonItemEvent>;
+  onPressHeaderBarButtonMenuItem?: DirectEventHandler<OnPressHeaderBarButtonMenuItemEvent>;
 }
 
 export default codegenNativeComponent<NativeProps>(
