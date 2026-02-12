@@ -11,7 +11,6 @@ import {
 // Native components
 import FullWindowOverlayNativeComponent from '../specs/FullWindowOverlayNativeComponent';
 import type { NativeProps } from '../specs/FullWindowOverlayNativeComponent';
-import { isNativePlatformSupported } from '../core';
 
 const NativeFullWindowOverlay: React.ComponentType<
   PropsWithChildren<{
@@ -28,28 +27,20 @@ type FullWindowOverlayProps = {
 function FullWindowOverlay(props: FullWindowOverlayProps) {
   const { width, height } = useWindowDimensions();
   
-  // On iOS and Harmony, use native component
-  if (
-    (Platform.OS === 'ios' || (Platform.OS as string) === 'harmony') &&
-    isNativePlatformSupported
-  ) {
-    return (
-      <NativeFullWindowOverlay
-        style={[StyleSheet.absoluteFill, { width, height }]}
-        accessibilityContainerViewIsModal={
-          props.unstable_accessibilityContainerViewIsModal
-        }>
-        {props.children}
-      </NativeFullWindowOverlay>
-    );
-  }
-  
-  // On other platforms, show warning and return View
   if (Platform.OS !== 'ios' && (Platform.OS as string) !== 'harmony') {
-    console.warn('Using FullWindowOverlay is only valid on iOS and Harmony devices.');
+    console.warn('Using FullWindowOverlay is only valid on iOS devices.');
+    return <View {...props} />;
   }
   
-  return <View {...props} />;
+  return (
+    <NativeFullWindowOverlay
+      style={[StyleSheet.absoluteFill, { width, height }]}
+      accessibilityContainerViewIsModal={
+        props.unstable_accessibilityContainerViewIsModal
+      }>
+      {props.children}
+    </NativeFullWindowOverlay>
+  );
 }
 
 export default FullWindowOverlay;
