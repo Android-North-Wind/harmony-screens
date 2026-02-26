@@ -121,6 +121,10 @@ export struct RNSScreen {
   @State translateYValue: string = '0';
   @State opacityValue: number = 1;
   @State screenOrientation: string = 'default';
+  // 记录该页面最后一次下发到 window 的方向，避免重复设置与干扰其他页面
+  private lastAppliedOrientation: number = -1;
+  private appliedByThisScreen: boolean = false;
+
   @State sheetAllowedDetents: number[] = [];
   @State sheetLargestUndimmedDetent: number = 0;
   @State sheetInitialDetent: number = 0;
@@ -425,12 +429,17 @@ export struct RNSScreen {
     if (!this.descriptor) {
       return;
     }
-    let orientation: string = this.descriptor.rawProps["screenOrientation"];
-    let orientationTmp = -1; // window.Orientation.UNSPECIFIED;
-    if (this.pageId !== "default" && this.pageId === RNSScreen.TOP_PAGEID) {
-      this.screenOrientation = orientation;
 
-      if (this.screenOrientation == "all") {
+    if (this.pageId === "default" || this.pageId !== RNSScreen.TOP_PAGEID) {
+      return;
+    }
+
+    let orientation: string = this.descriptor.rawProps["screenOrientation"];
+    let orientationTmp = -1; // window.Orientation.UNSPECIFIED
+
+    this.screenOrientation = orientation;
+
+    if (this.screenOrientation == "all") {
         orientationTmp = window.Orientation.AUTO_ROTATION;
       } else if (this.screenOrientation == "portrait") {
         orientationTmp = window.Orientation.PORTRAIT;
@@ -448,11 +457,60 @@ export struct RNSScreen {
         orientationTmp = window.Orientation.UNSPECIFIED;
       }
 
-      let context = getContext(this) as common.UIAbilityContext;
-      window.getLastWindow(context).then((lastWindow) => {
-        lastWindow.setPreferredOrientation(orientationTmp);
-      });
+      this.applyOrientation(orientationTmp, true);
+  }
+
+  private restoreDefaultOrientation(markOwner: boolean = false) {
+    this.applyOrientation(window.Orientation.UNSPECIFIED, markOwner);
+  }
+
+  private applyOrientation(orientationTmp: number, markOwner: boolean = true) {
+    if (markOwner && this.appliedByThisScreen && this.lastAppliedOrientation === orientationTmp) {
+      return;
     }
+
+    try {
+      let context = getContext(this) as common.UIAbilityContext;
+      if (!context) {
+        this.logger?.error('RNSScreen applyOrientation: uiAbilityContext is null');
+        return;
+      }
+      window.getLastWindow(context).then((lastWindow) => {
+        if (!lastWindow) {
+          this.logger?.error('RNSScreen applyOrientation: getLastWindow returned null');
+          return;
+        }
+        lastWindow.setPreferredOrientation(orientationTmp);
+        this.lastAppliedOrientation = orientationTmp;
+        if (markOwner) {
+          this.appliedByThisScreen = true;
+          RNSScreen.RECORD_TOP_PAGEID = this.pageId;
+        }
+      }).catch((error: Error) => {
+        this.logger?.error('RNSScreen applyOrientation getLastWindow error: ' + error);
+      })
+    } catch (error) {
+      this.logger?.error('RNSScreen applyOrientation context error: ' + error);
+    }
+  }
+
+  private releaseScreenOrientation() {
+    if (this.pageId === "default") {
+      return;
+    }
+    if (!this.appliedByThisScreen) {
+      return;
+    }
+    if (RNSScreen.RECORD_TOP_PAGEID !== this.pageId) {
+      return;
+    }
+    if (RNSScreen.TOP_PAGEID === this.pageId) {
+      return;
+    }
+
+    this.restoreDefaultOrientation(false);
+    this.appliedByThisScreen = false;
+    RNSScreen.RECORD_TOP_PAGEID = 'default';
   }
 
   private isRtl() {
@@ -685,6 +743,7 @@ export struct RNSScreen {
     })
     .onDisAppear(() => {
       this.logger.debug('onDisAppear ' + this.pageId + ' , screenId: ' + this.descriptor.rawProps["screenId"])
+      this.releaseScreenOrientation();
       this.customTransitionCoordinator?.unregisterNavParam(this.pageId);
       this.eventEmitter!.emit("disappear", {})
     })
